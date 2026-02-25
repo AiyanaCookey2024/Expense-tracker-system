@@ -1,52 +1,54 @@
-import { useState } from "react"; 
-import "./App.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { AuthProvider, useAuth } from "./AuthContext";
+import {
+  Register,
+  Login,
+  RequestPasswordReset,
+  ConfirmPasswordReset,
+} from "./components/Authentication";
+import Profile from "./components/Profile";
+import Home from "./components/Home";
+import Navigation from "./components/Navigation";
+import ExpenseApp from "./components/ExpenseApp";
 
-const Greeting = ({ phrase, name }) => (
-  <h1>{phrase} {name}!</h1>
-)
+/**
+ * AppContent component
+ * Contains the main routing logic
+ * Uses useAuth hook to conditionally render protected routes
+ */
+const AppContent = () => {
+  const { isLoggedIn } = useAuth();
 
-
-const Box = ({name, onNameChange, phrase, onPhraseChange}) => {     
   return (
-   <div className="box">
-      <Greeting name={name} phrase={phrase} />             
-      <input value={phrase} onChange={ onPhraseChange } />      
-      <input value={name} onChange={ onNameChange } />      
+    <div className="App">
+      <Navigation />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/expenses" element={<ExpenseApp />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<RequestPasswordReset />} />
+        <Route path="/reset-password" element={<ConfirmPasswordReset />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="*" element={<h2>404 Not Found</h2>} />
+      </Routes>
     </div>
   );
 };
 
-
-const App = () => {  
-  const [name, setName] = useState('Guest');  
-  const [phrase, setPhrase] = useState('Hi'); 
-
-
-  const handleNameChange = (event) => { 
-    const value = event.target.value;    
-    const formatted = value.charAt(0).toUpperCase() + value.slice(1);
-    setName(formatted); 
-  }
-
-
-  const handlePhraseChange = (event) => { 
-    const value = event.target.value;    
-    const formatted = value.charAt(0).toUpperCase() + value.slice(1);
-    setPhrase(formatted); 
-  }
-
-
+/**
+ * App component
+ * Root component that wraps the app with AuthProvider and Router
+ */
+const App = () => {
   return (
-    <>      
-      <Box 
-        name={name} 
-        onNameChange={handleNameChange}  
-        phrase={phrase}    
-        onPhraseChange={handlePhraseChange}
-      /> 
-    </>
+    <AuthProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </AuthProvider>
   );
 };
-
 
 export default App;
