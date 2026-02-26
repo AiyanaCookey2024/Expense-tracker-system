@@ -1,54 +1,120 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { AuthProvider, useAuth } from "./AuthContext";
-import {
-  Register,
-  Login,
-  RequestPasswordReset,
-  ConfirmPasswordReset,
-} from "./components/Authentication";
-import Profile from "./components/Profile";
-import Home from "./components/Home";
-import Navigation from "./components/Navigation";
-import ExpenseApp from "./components/ExpenseApp";
+import { useEffect, useState } from "react";
+import Form from "./components/Form";
+import Expense from "./components/Expense";
 
-/**
- * AppContent component
- * Contains the main routing logic
- * Uses useAuth hook to conditionally render protected routes
- */
-const AppContent = () => {
-  const { isLoggedIn } = useAuth();
+const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000/api";
+
+function App() {
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    fetch(`${apiURL}/expenses/`)
+      .then(res => res.json())
+      .then(data => {
+        const mapped = data.map(exp => ({
+          id: exp.id,
+          name: exp.title,
+          completed: exp.completed
+        }));
+        setTasks(mapped);
+      })
+      .catch(err => console.error(err));
+  }, []);
+
+  function addTask(name) {
+    fetch(`${apiURL}/expenses/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        title: name,
+        amount: 10.00,
+        category: "OTHER",
+        completed: false
+      })
+    })
+      .then(res => res.json())
+      .then(newExp => {
+        setTasks([
+          ...tasks,
+          {
+            id: newExp.id,
+            name: newExp.title,
+            completed: newExp.completed
+          }
+        ]);
+      });
+  }
+
+  function toggleTaskCompleted(id) {
+    const task = tasks.find(t => t.id === id);
+
+    fetch(`${apiURL}/expenses/${id}/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        completed: !task.completed
+      })
+    })
+      .then(res => res.json())
+      .then(updated => {
+        setTasks(tasks.map(t =>
+          t.id === id ? { ...t, completed: updated.completed }
+            : t
+        ));
+      });
+  }
+
+  function editTask(id, newName) {
+    fetch(`${apiURL}/expenses/${id}/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        title: newName
+      })
+    })
+      .then(res => res.json())
+      .then(updated => {
+        setTasks(tasks.map(t =>
+          t.id === id
+            ? { ...t, name: updated.title }
+            : t
+        ));
+      });
+  }
+
+  function deleteTask(id) {
+    fetch(`${apiURL}/expenses/${id}/`, {
+      method: "DELETE"
+    }).then(() => {
+      setTasks(tasks.filter(t => t.id !== id));
+    });
+  }
 
   return (
-    <div className="App">
-      <Navigation />
-
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/expenses" element={<ExpenseApp />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/forgot-password" element={<RequestPasswordReset />} />
-        <Route path="/reset-password" element={<ConfirmPasswordReset />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="*" element={<h2>404 Not Found</h2>} />
-      </Routes>
+    <div className="todoapp">
+      <h1>Expenses</h1>
+      <Form addTask={addTask} />
+      <ul>
+        {tasks.map(task => (
+          <Expense
+            key={task.id}
+            id={task.id}
+            name={task.name}
+            completed={task.completed}
+            toggleTaskCompleted={toggleTaskCompleted}
+            editTask={editTask}
+            deleteTask={deleteTask}
+          />
+        ))}
+      </ul>
     </div>
   );
-};
-
-/**
- * App component
- * Root component that wraps the app with AuthProvider and Router
- */
-const App = () => {
-  return (
-    <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </AuthProvider>
-  );
-};
+}
 
 export default App;
