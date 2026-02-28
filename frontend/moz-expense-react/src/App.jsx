@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import Form from "./components/Form";
 import Expense from "./components/Expense";
 
-const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000/api";
-
 function App() {
   const [tasks, setTasks] = useState([]);
+  const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000";
+
 
   useEffect(() => {
     fetch(`${apiURL}/expenses/`)
