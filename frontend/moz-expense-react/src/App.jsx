@@ -8,7 +8,7 @@ function App() {
 
 
   useEffect(() => {
-    fetch(`${apiURL}/expenses/`)
+    fetch(`${apiURL}/api/expenses/`)
       .then(res => res.json())
       .then(data => {
         const mapped = data.map(exp => ({
@@ -22,7 +22,7 @@ function App() {
   }, []);
 
   function addTask(name) {
-    fetch(`${apiURL}/expenses/`, {
+    fetch(`${apiURL}/api/expenses/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -50,7 +50,7 @@ function App() {
   function toggleTaskCompleted(id) {
     const task = tasks.find(t => t.id === id);
 
-    fetch(`${apiURL}/expenses/${id}/`, {
+    fetch(`${apiURL}/api/expenses/${id}/`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json"
@@ -69,7 +69,7 @@ function App() {
   }
 
   function editTask(id, newName) {
-    fetch(`${apiURL}/expenses/${id}/`, {
+    fetch(`${apiURL}/api/expenses/${id}/`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json"
@@ -89,7 +89,7 @@ function App() {
   }
 
   function deleteTask(id) {
-    fetch(`${apiURL}/expenses/${id}/`, {
+    fetch(`${apiURL}/api/expenses/${id}/`, {
       method: "DELETE"
     }).then(() => {
       setTasks(tasks.filter(t => t.id !== id));
