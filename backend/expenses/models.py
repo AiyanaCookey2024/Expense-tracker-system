@@ -1,8 +1,21 @@
 from django.db import models
+from django.conf import settings
 
 
 # Create your models here.
+class SalaryPeriod(models.Model):
+    month = models.IntegerField()
+    year = models.IntegerField()
+    total_salary = models.DecimalField(max_digits=10, decimal_places=2)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('month', 'year')
+
+    def __str__(self):
+        return f"{self.month}/{self.year} - £{self.total_salary}"
 
 class Expense(models.Model):
 
@@ -11,6 +24,9 @@ class Expense(models.Model):
         ('TRANSPORT','Transport'),
         ('ENTERTAINMENT', 'Entertainment'),
         ('BILLS', 'Bills'),
+        ("FUN","Fun"),
+        ("MAINTENANCE","Maintenance"),
+        ("SAVINGS/INVESTMENTS","Savings/Investments"),
         ('OTHER', 'Other'),
     ]
     title = models.CharField(max_length=120)
@@ -19,7 +35,8 @@ class Expense(models.Model):
     date = models.DateField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    completed = models.BooleanField(default=False)
+    
+    salary_period = models.ForeignKey(SalaryPeriod, on_delete=models.CASCADE, related_name='expenses')
 
 
     def __str__(self):

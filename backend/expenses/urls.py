@@ -1,6 +1,8 @@
-from django.urls import path
-from . import views
+from rest_framework.routers import DefaultRouter
+from .views import SalaryPeriodView, ExpenseView
 
-urlpatterns = [
-    path('expenses/', views.expense_list, name='expense-list'),                                     
-]
+router = DefaultRouter()
+router.register(r'salary-periods', SalaryPeriodView, basename='salary-period')
+router.register(r'expenses', ExpenseView, basename='expense')
+
+urlpatterns = router.urls
