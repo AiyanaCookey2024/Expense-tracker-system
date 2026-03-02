@@ -3,7 +3,7 @@ from .models import Expense
 
 
 class ExpenseAdmin(admin.ModelAdmin):
-    list_display = ('title', 'amount', 'category', 'completed')
+    list_display = ('title', 'amount', 'category')
 
 
 # Register your models here.

@@ -6,7 +6,7 @@ from expenses import views
 
 router = routers.DefaultRouter()
 router.register(r'expenses', views.ExpenseView, 'expense')
-
+router.register(r'salary-periods', views.SalaryPeriodView, 'salary-period')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
