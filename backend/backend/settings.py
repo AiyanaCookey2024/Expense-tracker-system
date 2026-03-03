@@ -129,6 +129,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 CORS_ORIGIN_WHITELIST = [
-     'http://localhost:3000'
+     'https://expense-tracker-system-1-dhpr.onrender.com',
 ]
 # change when you have actual frontend url 
