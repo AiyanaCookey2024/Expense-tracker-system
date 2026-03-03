@@ -1,8 +1,12 @@
 from rest_framework import serializers
-from .models import Expense, SalaryPeriod
+from .models import Expense, SalaryPeriod, Budget
 from django.db.models import Sum
 from decimal import Decimal
 
+class BudgetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Budget
+        fields = "__all__"
 
 class SalaryPeriodSerializer(serializers.ModelSerializer):
     remaining_balance = serializers.SerializerMethodField()

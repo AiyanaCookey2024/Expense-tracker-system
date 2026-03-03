@@ -3,6 +3,16 @@ from django.conf import settings
 
 
 # Create your models here.
+class Budget(models.Model):
+    name = models.CharField(max_length=250)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    month = models.IntegerField()
+    year = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.name} - £{self.month}/{self.year}"
+
+
 class SalaryPeriod(models.Model):
     month = models.IntegerField()
     year = models.IntegerField()
