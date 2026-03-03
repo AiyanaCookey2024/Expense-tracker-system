@@ -1,11 +1,22 @@
 import { useEffect, useState } from "react";
 import Form from "./components/Form";
 import Expense from "./components/Expense";
+import Budget from "./components/Budget";
+import BudgetForm from "./components/BudgetForm";
 
 function App() {
   const [tasks, setTasks] = useState([]);
+  const [budgets, setBudgets] = useState([]);
   const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000";
 
+  useEffect(() => {
+    fetch(`${apiURL}/api/budgets/`)
+      .then(res => res.json())
+      .then(data => {
+        setBudgets(data);
+      })
+      .catch(err => console.error(err));
+  }, []);
 
   useEffect(() => {
     fetch(`${apiURL}/api/expenses/`)
@@ -20,6 +31,28 @@ function App() {
       })
       .catch(err => console.error(err));
   }, []);
+
+  function addBudget(name, totalAmount, month, year) {
+    fetch(`${apiURL}/api/budgets/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name,
+        total_amount: totalAmount,
+        month,
+        year
+      })
+    })
+      .then(res => res.json())
+      .then(newBudget => {
+        setBudgets([
+          ...budgets,
+          newBudget
+        ]);
+      });
+  }
 
   function addTask(name) {
     fetch(`${apiURL}/api/expenses/`, {
@@ -68,6 +101,24 @@ function App() {
       });
   }
 
+  function editBudget(id, updatedFields) {
+    fetch(`${apiURL}/api/budgets/${id}/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        updatedFields
+      })
+    })
+      .then(res => res.json())
+      .then(updated => {
+        setBudgets(budgets.map(b =>
+          b.id === id ? updated : b
+        ));
+      });
+  }
+
   function editTask(id, newName) {
     fetch(`${apiURL}/api/expenses/${id}/`, {
       method: "PATCH",
@@ -87,6 +138,14 @@ function App() {
         ));
       });
   }
+  
+  function deleteBudget(id) { 
+    fetch(`${apiURL}/api/budgets/${id}/`, {
+      method: "DELETE"
+    }).then(() => {
+      setBudgets(budgets.filter(b => b.id !== id));
+    });
+  }
 
   function deleteTask(id) {
     fetch(`${apiURL}/api/expenses/${id}/`, {
@@ -97,7 +156,7 @@ function App() {
   }
 
   return (
-    <div className="todoapp">
+    <div className="expensesapp">
       <h1>Expenses</h1>
       <Form addTask={addTask} />
       <ul>
@@ -110,6 +169,26 @@ function App() {
             toggleTaskCompleted={toggleTaskCompleted}
             editTask={editTask}
             deleteTask={deleteTask}
+          />
+        ))}
+      </ul>
+
+      <hr />
+
+      <h1>Budgets</h1>
+      <Form addTask={addBudget} />
+        
+      <ul>
+        {budgets.map(budget => (
+          <Budget
+            key={budget.id}
+            id={budget.id}
+            name={budget.name}
+            total_amount={budget.total_amount}
+            month={budget.month}
+            year={budget.year}
+            editBudget={editBudget}
+            deleteBudget={deleteBudget}
           />
         ))}
       </ul>
