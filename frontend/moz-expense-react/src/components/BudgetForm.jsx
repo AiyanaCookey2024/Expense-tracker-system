@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function Budget(props) {
+function BudgetForm(props) {
     const [isEditing, setEditing] = useState(false);
     const [newName, setNewName] = useState(props.name);
     const [newAmount, setNewAmount] = useState(props.amount);
@@ -10,7 +10,7 @@ function Budget(props) {
     function handleSubmit(e) {
         e.preventDefault();
 
-        props.editBudget(props.id, {
+        props.editBudgetForm(props.id, {
             name: newName, 
             total_amount: parseFloat(newAmount), 
             month: parseInt(newMonth), 
@@ -87,4 +87,4 @@ function Budget(props) {
     );
 }
 
-export default Budget;
+export default BudgetForm;
