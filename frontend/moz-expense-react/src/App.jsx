@@ -1,12 +1,18 @@
+import { Routes, Route, Link} from "react-router-dom";
 import { useEffect, useState } from "react";
-import Form from "./components/Form";
-import Expense from "./components/Expense";
-import Budget from "./components/Budget";
-import BudgetForm from "./components/BudgetForm";
+import ExpenseDetails from "./pages/ExpenseDetails";
+import BudgetDetails from "./pages/BudgetDetails";
+import CreateExpense from "./pages/CreateExpense";
+import CreateBudget from "./pages/CreateBudget";
+import EditExpense from "./pages/EditExpense";
+import EditBudget from "./pages/EditBudget";
+
+import Home from "./pages/Home";
+
 
 function App() {
-  const [tasks, setTasks] = useState([]);
-  const [budgets, setBudgets] = useState([]);
+  const [expense, setExpense] = useState([]);
+  const [budget, setBudget] = useState([]);
   const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000";
 
   useEffect(() => {
@@ -22,84 +28,35 @@ function App() {
     fetch(`${apiURL}/api/expenses/`)
       .then(res => res.json())
       .then(data => {
-        const mapped = data.map(exp => ({
-          id: exp.id,
-          name: exp.title,
-          completed: exp.completed
-        }));
-        setTasks(mapped);
+        setExpenses(data);
       })
       .catch(err => console.error(err));
   }, []);
 
-  function addBudget(name, totalAmount, month, year) {
+  function addBudget(data) {
     fetch(`${apiURL}/api/budgets/`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        name,
-        total_amount: totalAmount,
-        month,
-        year
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
     })
       .then(res => res.json())
-      .then(newBudget => {
-        setBudgets([
-          ...budgets,
-          newBudget
-        ]);
+      .then(newBud => {
+        setBudgets(prev => [...prev, newBud]);
       });
   }
+ 
+  function addExpense(data) {
+  fetch(`${apiURL}/api/expenses/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  })
+    .then(res => res.json())
+    .then(newExp => {
+      setExpenses(prev => [...prev, newExp]);
+    });
+}
 
-  function addTask(name) {
-    fetch(`${apiURL}/api/expenses/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        title: name,
-        amount: 10.00,
-        category: "OTHER",
-        completed: false
-      })
-    })
-      .then(res => res.json())
-      .then(newExp => {
-        setTasks([
-          ...tasks,
-          {
-            id: newExp.id,
-            name: newExp.title,
-            completed: newExp.completed
-          }
-        ]);
-      });
-  }
-
-  function toggleTaskCompleted(id) {
-    const task = tasks.find(t => t.id === id);
-
-    fetch(`${apiURL}/api/expenses/${id}/`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        completed: !task.completed
-      })
-    })
-      .then(res => res.json())
-      .then(updated => {
-        setTasks(tasks.map(t =>
-          t.id === id ? { ...t, completed: updated.completed }
-            : t
-        ));
-      });
-  }
 
   function editBudget(id, updatedFields) {
     fetch(`${apiURL}/api/budgets/${id}/`, {
@@ -119,25 +76,19 @@ function App() {
       });
   }
 
-  function editTask(id, newName) {
-    fetch(`${apiURL}/api/expenses/${id}/`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        title: newName
-      })
-    })
-      .then(res => res.json())
-      .then(updated => {
-        setTasks(tasks.map(t =>
-          t.id === id
-            ? { ...t, name: updated.title }
-            : t
-        ));
-      });
-  }
+ function editExpense(id, updatedFields) {
+  fetch(`${apiURL}/api/expenses/${id}/`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedFields)
+  })
+    .then(res => res.json())
+    .then(updated => {
+      setExpenses(prev =>
+        prev.map(e => e.id === id ? updated : e)
+      );
+    });
+}
   
   function deleteBudget(id) { 
     fetch(`${apiURL}/api/budgets/${id}/`, {
@@ -147,53 +98,54 @@ function App() {
     });
   }
 
-  function deleteTask(id) {
-    fetch(`${apiURL}/api/expenses/${id}/`, {
-      method: "DELETE"
-    }).then(() => {
-      setTasks(tasks.filter(t => t.id !== id));
+  function deleteExpense(id) {
+  fetch(`${apiURL}/api/expenses/${id}/`, {
+    method: "DELETE"
+  })
+    .then(() => {
+      setExpenses(prev =>
+        prev.filter(e => e.id !== id)
+      );
     });
-  }
+}
 
   return (
-    <div className="expensesapp">
-      <h1>Expenses</h1>
-      <Form addTask={addTask} />
-      <ul>
-        {tasks.map(task => (
-          <Expense
-            key={task.id}
-            id={task.id}
-            name={task.name}
-            completed={task.completed}
-            toggleTaskCompleted={toggleTaskCompleted}
-            editTask={editTask}
-            deleteTask={deleteTask}
-          />
-        ))}
-      </ul>
+  <>
+    <nav style={{
+      display: "flex",
+      gap: "20px",
+      padding: "20px",
+      background: "#111",
+      color: "white"
+    }}>
+      <Link to="/">Home</Link>
+      <Link to="/create-expense">Create Expense</Link>
+      <Link to="/create-budget">Create Budget</Link>
+      <Link to="/summary">Summary</Link>
+    </nav>
 
-      <hr />
-
-      <h1>Budgets</h1>
-      <Form addTask={addBudget} />
-        
-      <ul>
-        {budgets.map(budget => (
-          <Budget
-            key={budget.id}
-            id={budget.id}
-            name={budget.name}
-            total_amount={budget.total_amount}
-            month={budget.month}
-            year={budget.year}
-            editBudget={editBudget}
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <Home
+            expenses={expense}
+            budgets={budget}
+            deleteExpense={deleteExpense}
             deleteBudget={deleteBudget}
           />
-        ))}
-      </ul>
-    </div>
-  );
+        }
+      />
+
+      <Route path="/create-expense" element={<Create Expense={addExpense}/>} />
+      <Route path="/create-budget" element={<Create Budget={addBudget}/>} />
+      <Route path="/expenses/:id" element={<Expense Detail/>} />
+      <Route path="/expenses/edit/:id" element={<Edit Expense={editExpense}/>} />
+      <Route path="/budgets/:id" element={<Budget Detail/>} />
+      <Route path="/budgets/edit/:id" element={<Edit Budget={editBudget}/>} />
+    </Routes>
+  </>
+);
 }
 
 export default App;
