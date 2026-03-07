@@ -11,8 +11,8 @@ import Home from "./pages/Home";
 
 
 function App() {
-  const [expense, setExpense] = useState([]);
-  const [budget, setBudget] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+  const [budgets, setBudgets] = useState([]);
   const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000";
 
   useEffect(() => {
@@ -32,6 +32,15 @@ function App() {
       })
       .catch(err => console.error(err));
   }, []);
+
+  function getBudget(id) {
+    return budgets.find(b => b.id === id);
+  }
+
+  function getExpenses(id) {
+    return expenses.find(e => e.id === id);
+  }
+
 
   function addBudget(data) {
     fetch(`${apiURL}/api/budgets/`, {
@@ -57,38 +66,6 @@ function App() {
     });
 }
 
-
-  function editBudget(id, updatedFields) {
-    fetch(`${apiURL}/api/budgets/${id}/`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        updatedFields
-      })
-    })
-      .then(res => res.json())
-      .then(updated => {
-        setBudgets(budgets.map(b =>
-          b.id === id ? updated : b
-        ));
-      });
-  }
-
- function editExpense(id, updatedFields) {
-  fetch(`${apiURL}/api/expenses/${id}/`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updatedFields)
-  })
-    .then(res => res.json())
-    .then(updated => {
-      setExpenses(prev =>
-        prev.map(e => e.id === id ? updated : e)
-      );
-    });
-}
   
   function deleteBudget(id) { 
     fetch(`${apiURL}/api/budgets/${id}/`, {
@@ -121,7 +98,6 @@ function App() {
       <Link to="/">Home</Link>
       <Link to="/create-expense">Create Expense</Link>
       <Link to="/create-budget">Create Budget</Link>
-      <Link to="/summary">Summary</Link>
     </nav>
 
     <Routes>
@@ -129,20 +105,20 @@ function App() {
         path="/"
         element={
           <Home
-            expenses={expense}
-            budgets={budget}
+            expenses={expenses}
+            budgets={budgets}
             deleteExpense={deleteExpense}
             deleteBudget={deleteBudget}
           />
         }
       />
 
-      <Route path="/create-expense" element={<Create Expense={addExpense}/>} />
-      <Route path="/create-budget" element={<Create Budget={addBudget}/>} />
-      <Route path="/expenses/:id" element={<Expense Detail/>} />
-      <Route path="/expenses/edit/:id" element={<Edit Expense={editExpense}/>} />
-      <Route path="/budgets/:id" element={<Budget Detail/>} />
-      <Route path="/budgets/edit/:id" element={<Edit Budget={editBudget}/>} />
+      <Route path="/create-expense" element={<CreateExpense addExpense={addExpense}/>} />
+      <Route path="/create-budget" element={<CreateBudget addBudget={addBudget}/>} />
+      <Route path="/expenses/:id" element={<ExpenseDetails/>} />
+      <Route path="/expenses/edit/:id" element={<EditExpense />} />
+      <Route path="/budgets/:id" element={<BudgetDetails />} />
+      <Route path="/budgets/edit/:id" element={<EditBudget/>} />
     </Routes>
   </>
 );

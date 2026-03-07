@@ -15,7 +15,7 @@ function CreateBudget() {
 
     const handleChange = (e) => {
         setBudget({
-            ...budgets,
+            ...budget,
             [e.target.name]: e.target.value
         });
     }
@@ -38,7 +38,7 @@ function CreateBudget() {
             <h1>Create Budget</h1>
             <form onSubmit={handleSubmit}>
                 <input name="name" placeholder="Name" value={budget.name} onChange={handleChange} />
-                <input name="total amount" placeholder="Total Amount" value={budget.total_amount} onChange={handleChange} />
+                <input name="total_amount" placeholder="Total Amount" value={budget.total_amount} onChange={handleChange} />
                 <input name="month" placeholder="Month" value={budget.month} onChange={handleChange} />
                 <input name="year" placeholder="Year" value={budget.year} onChange={handleChange} />
                 <button type="submit">Create</button>

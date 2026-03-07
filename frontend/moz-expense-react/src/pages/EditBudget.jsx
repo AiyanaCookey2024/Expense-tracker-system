@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 
 function EditBudget() {
 
+    const apiURL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/";
 
     const { id } = useParams();
     const navigate = useNavigate();
-    const [expense, setBudget] = useState({
+    const [budget, setBudget] = useState({
         name: "",
         total_amount: "",
         month: "",
@@ -32,7 +33,7 @@ function EditBudget() {
         fetch(`${apiURL}/api/budgets/${id}/`, {
             method: 'PUT',
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(expense)
+            body: JSON.stringify(budget)
         })
             .then(() => navigate(`/budgets/${id}`))
     }
@@ -42,7 +43,7 @@ function EditBudget() {
             <h1>Edit Budget</h1>
             <form onSubmit={handleSubmit}>
                 <input name="name" placeholder="Name" value={budget.name} onChange={handleChange} />
-                <input name="total amount" placeholder="Total Amount" value={budget.total_amount} onChange={handleChange} />
+                <input name="total_amount" placeholder="Total Amount" value={budget.total_amount} onChange={handleChange} />
                 <input name="month" placeholder="Month" value={budget.month} onChange={handleChange} />
                 <input name="year" placeholder="Year" value={budget.year} onChange={handleChange} />
                 <button type="submit">Create</button>

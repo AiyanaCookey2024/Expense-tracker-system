@@ -14,7 +14,7 @@ function BudgetForm(props) {
             name: newName, 
             total_amount: parseFloat(newAmount), 
             month: parseInt(newMonth), 
-            yaer: parseInt(newYear)
+            year: parseInt(newYear)
         });
 
         setEditing(false);

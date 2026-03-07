@@ -20,6 +20,9 @@ class SalaryPeriodSerializer(serializers.ModelSerializer):
         return obj.total_salary - total_spent
 
 class ExpenseSerializer(serializers.ModelSerializer):
+    month = serializers.IntegerField(source='salary_period.month', read_only=True)  
+    year = serializers.IntegerField(source='salary_period.year', read_only=True)
+    
     class Meta:
         model = Expense
         fields = "__all__"
