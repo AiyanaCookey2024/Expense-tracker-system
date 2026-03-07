@@ -1,4 +1,4 @@
-import { Routes, Route, Link} from "react-router-dom";
+import { Routes, Route, Link, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ExpenseDetails from "./pages/ExpenseDetails";
 import BudgetDetails from "./pages/BudgetDetails";
@@ -6,9 +6,17 @@ import CreateExpense from "./pages/CreateExpense";
 import CreateBudget from "./pages/CreateBudget";
 import EditExpense from "./pages/EditExpense";
 import EditBudget from "./pages/EditBudget";
+import { Login, Register } from "./components/Authentication";
+import { useAuth } from "./AuthContext";
+
 
 import Home from "./pages/Home";
 
+function PrivateRoute({ children }) {
+  const { isLoggedIn } = useAuth();
+
+  return isLoggedIn ? children : <Navigate to="/login" />;
+}
 
 function App() {
   const [expenses, setExpenses] = useState([]);
@@ -96,6 +104,8 @@ function App() {
       color: "white"
     }}>
       <Link to="/">Home</Link>
+      <Link to="/login">Login</Link>
+      <Link to="/register">Register</Link>
       <Link to="/create-expense">Create Expense</Link>
       <Link to="/create-budget">Create Budget</Link>
     </nav>
@@ -104,15 +114,18 @@ function App() {
       <Route
         path="/"
         element={
-          <Home
-            expenses={expenses}
-            budgets={budgets}
-            deleteExpense={deleteExpense}
-            deleteBudget={deleteBudget}
-          />
+          <PrivateRoute>
+            <Home
+              expenses={expenses}
+              budgets={budgets}
+              deleteExpense={deleteExpense}
+              deleteBudget={deleteBudget}
+            />
+          </PrivateRoute>
         }
       />
-
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route path="/create-expense" element={<CreateExpense addExpense={addExpense}/>} />
       <Route path="/create-budget" element={<CreateBudget addBudget={addBudget}/>} />
       <Route path="/expenses/:id" element={<ExpenseDetails/>} />
