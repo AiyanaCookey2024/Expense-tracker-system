@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function CreateExpense() {
@@ -7,12 +7,15 @@ function CreateExpense() {
 
     const navigate = useNavigate();
 
+    const [salaryPeriods, setSalaryPeriods] = useState([]);
+
     const [expense, setExpense] = useState({
         category: '',
         title: '',
         amount: '',
         month: '',
-        year: ''
+        year: '',
+        salary_period: ''
     });
 
     const handleChange = (e) => {
@@ -23,27 +26,69 @@ function CreateExpense() {
     }
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        fetch(`${apiURL}/api/expenses/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(expense)
-        })
-            .then(() => navigate("/"))
-}
+    const formattedExpense = {
+        ...expense,
+        amount: parseFloat(expense.amount),
+        month: parseInt(expense.month),
+        year: parseInt(expense.year),
+        salary_period: parseInt(expense.salary_period)
+    };
+
+    fetch(`${apiURL}/api/expenses/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formattedExpense)
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("SERVER RESPONSE:", data);
+
+        navigate("/");
+    })
+    .catch(err => console.error(err));
+};
+
+    useEffect(() => {
+
+        fetch(`${apiURL}/api/salary-periods/`)
+            .then(res => res.json())
+            .then(data => setSalaryPeriods(data))
+            .catch(err => console.error(err));
+    }, []);
+
 
     return (
         <div>
             <h1>Create Expense</h1>
             <form onSubmit={handleSubmit}>
-                <input name="category" placeholder="Category" value={expense.category} onChange={handleChange} />
+                <select name="category" value={expense.category} onChange={handleChange}>
+                    <option value="">Select Category</option>
+                    <option value="FOOD">Food</option>
+                    <option value="TRANSPORT">Transport</option>
+                    <option value="ENTERTAINMENT">Entertainment</option>
+                    <option value="BILLS">Bills</option>
+                    <option value="FUN">Fun</option>
+                    <option value="MAINTENANCE">Maintenance</option>
+                    <option value="SAVINGS/INVESTMENTS">Savings/Investments</option>
+                    <option value="OTHER">Other</option>
+                </select>
                 <input name="title" placeholder="Title" value={expense.title} onChange={handleChange} />
-                <input name="amount" placeholder="Amount" value={expense.amount} onChange={handleChange} />
-                <input name="month" placeholder="Month" value={expense.month} onChange={handleChange} />
-                <input name="year" placeholder="Year" value={expense.year} onChange={handleChange} />
+                <input type="number" name="amount" placeholder="Amount" value={expense.amount} onChange={handleChange} />
+                <input type="number" name="month" placeholder="Month" value={expense.month} onChange={handleChange} />
+                <input type="number" name="year" placeholder="Year" value={expense.year} onChange={handleChange} />
+                <select name="salary_period" value={expense.salary_period} onChange={handleChange}>
+                    <option value="">Select Salary Period</option>
+
+                    {salaryPeriods.map(period => (
+                        <option key={period.id} value={period.id}>
+                            {period.total_salary} ({period.month}/{period.year})
+                        </option>
+                    ))}
+                </select>
                 <button type="submit">Create</button>
             </form>
         </div>
