@@ -45,8 +45,6 @@ function CreateExpense() {
     })
     .then(res => res.json())
     .then(data => {
-        console.log("SERVER RESPONSE:", data);
-
         navigate("/");
     })
     .catch(err => console.error(err));
@@ -89,7 +87,8 @@ function CreateExpense() {
                         </option>
                     ))}
                 </select>
-                <button type="submit">Create</button>
+                <button type="submit" className="btn">
+                    Create</button>
             </form>
         </div>
     );

@@ -1,12 +1,53 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 function Home({ expenses, budgets, deleteExpense, deleteBudget }) {
+  
+  const [period, setPeriod] = useState(null);
+  const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000";
 
+  useEffect(() => {
+  fetch(`${apiURL}/api/salary-periods/`)
+    .then(res => res.json())
+    .then(data => setPeriod(data[0]));
+  }, []);
+
+
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June", "July", 
+    "August", "September", "October", "November", "December"
+  ];
+  
+  const salaryPeriod = 
+    budgets.length > 0 
+    ? `${monthNames[budgets[0].month -1]} ${budgets[0].year}`
+    : "No salary period";
+
+  const totalExpenses = expenses.reduce(
+    (sum, e) => sum + Number(e.amount),
+    0
+  )
+  const totalSalary = Number(period?.total_salary) || 0;
+  
+  const remaining = totalSalary - totalExpenses;
   
   return (
     <div className="container">
 
       <h1>Dashboard</h1>
+
+      {salaryPeriod && (
+      <h2>Salary Period: {salaryPeriod}</h2>
+      )}
+
+      <p>Total Salary: £{totalSalary.toFixed(2)}</p>
+      <p>Total Expenses: £{totalExpenses.toFixed(2)}</p>
+      <p
+        style={{
+          color: remaining < 0 ? "red" : "green",
+          fontWeight:"bold"}}
+          >
+          Remaining: £{remaining.toFixed(2)}</p>
 
       <h2>Expenses</h2>
 
@@ -55,7 +96,7 @@ function Home({ expenses, budgets, deleteExpense, deleteBudget }) {
 
       <div className="table-wrapper">
 
-      <table border="1" width="100%">
+      <table>
         <thead>
           <tr>
             <th>Name</th>

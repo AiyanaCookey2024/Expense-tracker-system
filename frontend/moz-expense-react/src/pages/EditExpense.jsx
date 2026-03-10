@@ -83,7 +83,8 @@ function EditExpense() {
                         </option>
                     ))}
                 </select>
-                <button type="submit">Update</button>
+                <button type="submit" className="btn">
+                    Update </button>
             </form>
         </div>
     );

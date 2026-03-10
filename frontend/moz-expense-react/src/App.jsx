@@ -1,4 +1,4 @@
-import { Routes, Route, Link, Navigate, useNavigate} from "react-router-dom";
+import { Routes, Route, Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ExpenseDetails from "./pages/ExpenseDetails";
 import BudgetDetails from "./pages/BudgetDetails";
@@ -8,7 +8,7 @@ import EditExpense from "./pages/EditExpense";
 import EditBudget from "./pages/EditBudget";
 import { Login, Register } from "./components/Authentication";
 import { useAuth } from "./AuthContext";
-
+import SalaryPeriod from "./pages/ChangeSalary";
 
 import Home from "./pages/Home";
 
@@ -17,8 +17,6 @@ function PrivateRoute({ children }) {
 
   return isLoggedIn ? children : <Navigate to="/login" />;
 }
-
-
 
 function App() {
   const [expenses, setExpenses] = useState([]);
@@ -49,14 +47,6 @@ function App() {
       })
       .catch(err => console.error(err));
   }, []);
-
-  function getBudget(id) {
-    return budgets.find(b => b.id === id);
-  }
-
-  function getExpenses(id) {
-    return expenses.find(e => e.id === id);
-  }
 
 
   function addBudget(data) {
@@ -103,17 +93,22 @@ function App() {
     });
 }
 
+const location = useLocation();
+const hideNav = location.pathname === "/login" || location.pathname === "/register";
+
   return (
   <>
+    {!hideNav && (
     <nav>
-      <Link to="/">Home</Link>
-      <Link to="/create-expense">Create Expense</Link>
-      <Link to="/create-budget">Create Budget</Link>
-
+  
       {isLoggedIn ?(
         <>
-        <span>Welcome {username}</span>
-        <button onClick={handleLogout}>Logout</button>
+        <Link to="/">Home</Link>
+        <Link to="/create-expense">Create Expense</Link>
+        <Link to="/create-budget">Create Budget</Link>
+        <Link to="/salary-period">Salary Period</Link>
+        <span className="welcome-text"> Welcome {username}!</span>
+        <button className="btn" onClick={handleLogout}>Logout</button>
         </>
       ) : (
         <>
@@ -122,7 +117,7 @@ function App() {
         </>
       )}
     </nav>
-
+    )}
     <Routes>
       <Route
         path="/"
@@ -137,14 +132,38 @@ function App() {
           </PrivateRoute>
         }
       />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/create-expense" element={<CreateExpense addExpense={addExpense}/>} />
-      <Route path="/create-budget" element={<CreateBudget addBudget={addBudget}/>} />
-      <Route path="/expenses/:id" element={<ExpenseDetails/>} />
-      <Route path="/expenses/edit/:id" element={<EditExpense />} />
-      <Route path="/budgets/:id" element={<BudgetDetails />} />
-      <Route path="/budgets/edit/:id" element={<EditBudget/>} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/create-expense" element={
+          <PrivateRoute>
+            <CreateExpense addExpense={addExpense}/> 
+          </PrivateRoute>} /> 
+        <Route path="/create-budget" element={
+          <PrivateRoute>
+            <CreateBudget addBudget={addBudget}/> 
+          </PrivateRoute>} /> 
+        <Route path="/expenses/:id" element={
+          <PrivateRoute> 
+            <ExpenseDetails/>
+          </PrivateRoute>} />
+        <Route path="/expenses/edit/:id" element={
+          <PrivateRoute>
+            <EditExpense />
+          </PrivateRoute>} />
+        <Route path="/budgets/:id" element={
+          <PrivateRoute>
+            <BudgetDetails />
+          </PrivateRoute>} /> 
+        <Route path="/budgets/edit/:id" element={
+          <PrivateRoute>
+            <EditBudget/>
+          </PrivateRoute>} />
+        <Route path="/salary-period" element={
+          <PrivateRoute>
+            <SalaryPeriod />
+          </PrivateRoute>
+        }
+        />
     </Routes>
   </>
 );

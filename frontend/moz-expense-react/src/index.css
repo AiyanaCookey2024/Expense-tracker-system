@@ -81,6 +81,7 @@ body {
   padding: 0.8rem 1rem 0.7rem;
   text-transform: capitalize;
 }
+
 .btn.toggle-btn {
   border-color: lightgray;
   border-width: 1px;
@@ -292,4 +293,5 @@ body {
 .c-cb > input[type="checkbox"]:checked + label::after {
   opacity: 1;
 }
+
 /* End checkbox styles */
