@@ -62,7 +62,7 @@ function CreateExpense() {
 
 
     return (
-        <div>
+        <div className="container">
             <h1>Create Expense</h1>
             <form onSubmit={handleSubmit}>
                 <select name="category" value={expense.category} onChange={handleChange}>

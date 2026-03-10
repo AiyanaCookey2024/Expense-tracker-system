@@ -4,11 +4,14 @@ function Home({ expenses, budgets, deleteExpense, deleteBudget }) {
 
   
   return (
-    <div className="expensesapp">
+    <div className="container">
 
-      <h1>Expenses</h1>
+      <h1>Dashboard</h1>
 
-      <table border="1" width="100%">
+      <h2>Expenses</h2>
+
+      <div className="table-wrapper">
+      <table>
         <thead>
           <tr>
             <th>Category</th>
@@ -17,6 +20,7 @@ function Home({ expenses, budgets, deleteExpense, deleteBudget }) {
             <th>Actions</th>
           </tr>
         </thead>
+  
 
         <tbody>
           {expenses.map(expense => (
@@ -25,17 +29,17 @@ function Home({ expenses, budgets, deleteExpense, deleteBudget }) {
               <td>{expense.title}</td>
               <td>£{expense.amount}</td>
 
-              <td style={{display:"flex", gap:"10px"}}>
+              <td>
 
-                <Link to={`/expenses/${expense.id}`}>
-                  <button>View</button>
+                <Link className="btn view-details" to={`/expenses/${expense.id}`}>
+                  View Details
                 </Link>
 
-                <Link to={`/expenses/edit/${expense.id}`}>
-                  <button>Edit</button>
+                <Link className="btn edit" to={`/expenses/edit/${expense.id}`}>
+                  Edit
                 </Link>
 
-                <button onClick={() => deleteExpense(expense.id)}>
+                <button className="btn delete" onClick={() => deleteExpense(expense.id)}>
                   Delete
                 </button>
 
@@ -44,9 +48,12 @@ function Home({ expenses, budgets, deleteExpense, deleteBudget }) {
           ))}
         </tbody>
       </table>
+      </div>
 
 
-      <h1>Budgets</h1>
+      <h2>Budgets</h2>
+
+      <div className="table-wrapper">
 
       <table border="1" width="100%">
         <thead>
@@ -68,22 +75,20 @@ function Home({ expenses, budgets, deleteExpense, deleteBudget }) {
               <td>{budget.month}</td>
               <td>{budget.year}</td>
 
-              <td style={{display:"flex", gap:"10px"}}>
+              <td>
 
-                <Link to={`/budgets/${budget.id}`}>
-                  <button>View</button>
+                <Link className="btn view-details" to={`/budgets/${budget.id}`}>
+                  View Details
                 </Link>
 
-                <Link to={`/budgets/edit/${budget.id}`}>
-                  <button>Edit</button>
+                <Link className="btn edit" to={`/budgets/edit/${budget.id}`}>
+                  Edit
                 </Link>
 
-                <button onClick={() => deleteBudget(budget.id)}>
+                <button className="btn delete" onClick={() => deleteBudget(budget.id)}>
                   Delete
                 </button>
-
               </td>
-
             </tr>
           ))}
         </tbody>
@@ -91,6 +96,7 @@ function Home({ expenses, budgets, deleteExpense, deleteBudget }) {
       </table>
 
     </div>
+  </div>
   );
 }
 

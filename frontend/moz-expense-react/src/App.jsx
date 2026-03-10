@@ -1,4 +1,4 @@
-import { Routes, Route, Link, Navigate } from "react-router-dom";
+import { Routes, Route, Link, Navigate, useNavigate} from "react-router-dom";
 import { useEffect, useState } from "react";
 import ExpenseDetails from "./pages/ExpenseDetails";
 import BudgetDetails from "./pages/BudgetDetails";
@@ -18,10 +18,19 @@ function PrivateRoute({ children }) {
   return isLoggedIn ? children : <Navigate to="/login" />;
 }
 
+
+
 function App() {
   const [expenses, setExpenses] = useState([]);
   const [budgets, setBudgets] = useState([]);
+  const { logout, isLoggedIn, username } = useAuth();
+  const navigate = useNavigate();
   const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000";
+
+  function handleLogout() {
+    logout();
+    navigate("/login");
+   }
 
   useEffect(() => {
     fetch(`${apiURL}/api/budgets/`)
@@ -96,18 +105,22 @@ function App() {
 
   return (
   <>
-    <nav style={{
-      display: "flex",
-      gap: "20px",
-      padding: "20px",
-      background: "#111",
-      color: "white"
-    }}>
+    <nav>
       <Link to="/">Home</Link>
-      <Link to="/login">Login</Link>
-      <Link to="/register">Register</Link>
       <Link to="/create-expense">Create Expense</Link>
       <Link to="/create-budget">Create Budget</Link>
+
+      {isLoggedIn ?(
+        <>
+        <span>Welcome {username}</span>
+        <button onClick={handleLogout}>Logout</button>
+        </>
+      ) : (
+        <>
+        <Link to="/login">Login</Link>
+        <Link to="/register">Register</Link>
+        </>
+      )}
     </nav>
 
     <Routes>
