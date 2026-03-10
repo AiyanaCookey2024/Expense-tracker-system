@@ -39,7 +39,7 @@ function EditBudget() {
     }
 
     return (
-        <div>
+        <div className="container">
             <h1>Edit Budget</h1>
             <form onSubmit={handleSubmit}>
                 <input name="name" placeholder="Name" value={budget.name} onChange={handleChange} />

@@ -17,7 +17,7 @@ function BudgetDetails() {
     if (!budgets) return <p>Loading...</p>;
 
     return (
-        <div>
+        <div className="container">
             <h1>{budgets.name}</h1>
 
             <p>Name: {budgets.name}</p>

@@ -34,7 +34,7 @@ function CreateBudget() {
 }
 
     return (
-        <div>
+        <div className="container">
             <h1>Create Budget</h1>
             <form onSubmit={handleSubmit}>
                 <input name="name" placeholder="Name" value={budget.name} onChange={handleChange} />

@@ -56,7 +56,7 @@ function EditExpense() {
     }, []);
 
     return (
-        <div>
+        <div className="container">
             <h1>Update Expense</h1>
             <form onSubmit={handleSubmit}>
                 <input name="title" placeholder="Title" value={expense.title} onChange={handleChange} />

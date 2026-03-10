@@ -17,7 +17,7 @@ useEffect(() => {
 if (!expenses) return <p>Loading...</p>;
 
 return (
-    <div>
+    <div className="container">
         <h1>{expenses.title}</h1>
 
         <p>Category: {expenses.category}</p>
