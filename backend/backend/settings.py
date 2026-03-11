@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-jbxs4&hv=s0r(923vb_un!9podfzqs+pp52uimve_iv4$ou!z_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "expense-tracker-system-1l5v.onrender.com",
@@ -129,8 +129,6 @@ STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-ALLOWED_HOSTS = ["https://expense-tracker-system-1l5v.onrender.com", "localhost", "127.0.0.1"]
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -142,11 +140,15 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
 }
 
-CORS_ORIGIN_WHITELIST = [
-     'https://expense-tracker-system-1-dhpr.onrender.com',
-]
-
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://expense-tracker-system-1-dhpr.onrender.com"
 ]
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://expense-tracker-system-1-dhpr.onrender.com"
+]
+
+SECURE_SSL_REDIRECT = True
