@@ -142,13 +142,13 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://expense-tracker-system-1-dhpr.onrender.com"
+    "https://expense-tracker-system-1l5v.onrender.com"
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://expense-tracker-system-1-dhpr.onrender.com"
+    "https://expense-tracker-system-1l5v.onrender.com"
 ]
 
 SECURE_SSL_REDIRECT = True
