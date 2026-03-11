@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 
-const apiURL = import.meta.env.VITE_DJANGO_API_URL="https://expense-tracker-system-1l5v.onrender.com/api/auth"
+const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000/api";
 
 export const Login = () => {
   const { login } = useAuth();
@@ -14,7 +14,7 @@ export const Login = () => {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const res = await fetch(`${API_URL}/token/`, {
+    const res = await fetch(`${apiURL}/auth/token/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -69,7 +69,7 @@ export const Register = () => {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    await fetch(`${API_URL}/register/`, {
+    await fetch(`${apiURL}/auth/register/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
