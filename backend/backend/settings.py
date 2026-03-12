@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-jbxs4&hv=s0r(923vb_un!9podfzqs+pp52uimve_iv4$ou!z_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "expense-tracker-system-1l5v.onrender.com",
@@ -50,9 +50,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -142,13 +142,11 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://expense-tracker-system-1l5v.onrender.com"
+    "https://expense-tracker-system-1-dhpr.onrender.com"
 ]
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://expense-tracker-system-1l5v.onrender.com"
+CSRF_TRUSTED_ORIGINS = [ 
+    "https://expense-tracker-system-1-dhpr.onrender.com"
+    "http://127.0.0.1:8000"
 ]
 
-SECURE_SSL_REDIRECT = True
