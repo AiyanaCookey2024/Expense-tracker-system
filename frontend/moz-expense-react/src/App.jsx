@@ -23,7 +23,7 @@ function App() {
   const [budgets, setBudgets] = useState([]);
   const { logout, isLoggedIn, username } = useAuth();
   const navigate = useNavigate();
-  const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000/api";
+  const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000";
 
   function handleLogout() {
     logout();

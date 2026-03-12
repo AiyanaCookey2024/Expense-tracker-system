@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 function SalaryPeriod() {
     const [period, setPeriod] = useState(null);
     const [salary, setSalary] = useState(0);
-    const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000/api";
+    const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000";
     const navigate = useNavigate();
 
    useEffect(() => {

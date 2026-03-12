@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useAuth } from "../AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 
-const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000/api";
+const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000";
+console.log("API URL is", apiURL)
 
 export const Login = () => {
   const { login } = useAuth();
@@ -14,14 +15,14 @@ export const Login = () => {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const res = await fetch(`${apiURL}/auth/token/`, {
+    const res = await fetch(`${apiURL}/api/auth/token/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ username, password }),
     });
-
+    console.log("API URL is", apiURL)
     const data = await res.json();
 
     login(data.access, data.refresh, username);
@@ -69,7 +70,7 @@ export const Register = () => {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    await fetch(`${apiURL}/auth/register/`, {
+    await fetch(`${apiURL}/api/auth/register/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
