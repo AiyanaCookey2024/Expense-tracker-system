@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView
 )
 
-from .views import RegisterView
+from .views import RegisterView,  PasswordResetView, PasswordResetConfirmView, ProfileView
 
 
 urlpatterns = [
@@ -16,4 +16,14 @@ urlpatterns = [
     path("register/", RegisterView.as_view(), name="register"),
 
     path("login/", TokenObtainPairView.as_view(), name="login"),
+
+    path("password-reset/", PasswordResetView.as_view(), name="password-reset"),
+
+    path(
+        "password-reset-confirm/",
+        PasswordResetConfirmView.as_view(),
+        name="password-reset-confirm",
+    ),
+    
+    path("profile/", ProfileView.as_view(), name="profile"),
 ]

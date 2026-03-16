@@ -12,7 +12,13 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
+
+# The default "from" email used in Django emails
+DEFAULT_FROM_EMAIL = os.getenv("FROM_EMAIL")  
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -142,11 +148,11 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://expense-tracker-system-1-dhpr.onrender.com"
+    "https://expense-tracker-system-1-dhpr.onrender.com",
 ]
 
 CSRF_TRUSTED_ORIGINS = [ 
-    "https://expense-tracker-system-1-dhpr.onrender.com"
-    "http://127.0.0.1:8000"
+    "https://expense-tracker-system-1-dhpr.onrender.com",
+    "http://127.0.0.1:8000",
 ]
 

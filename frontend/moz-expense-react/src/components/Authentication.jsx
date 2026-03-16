@@ -56,6 +56,10 @@ export const Login = () => {
         Don't have an account ? <Link to="/register">Register</Link>
       </p>
 
+      <p className="auth-switch">
+        Forgot your password? <Link to="/forgot-password">Reset it</Link>
+      </p>
+
     </div>
     );
   };

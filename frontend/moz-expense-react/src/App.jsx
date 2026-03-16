@@ -9,6 +9,8 @@ import EditBudget from "./pages/EditBudget";
 import { Login, Register } from "./components/Authentication";
 import { useAuth } from "./AuthContext";
 import SalaryPeriod from "./pages/ChangeSalary";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 import Home from "./pages/Home";
 
@@ -94,7 +96,11 @@ function App() {
 }
 
 const location = useLocation();
-const hideNav = location.pathname === "/login" || location.pathname === "/register";
+const hideNav = 
+  location.pathname === "/login" || 
+  location.pathname === "/register"||
+  location.pathname ===  "/forgot-password" ||
+  location.pathname === "/resest-password";
 
   return (
   <>
@@ -161,9 +167,11 @@ const hideNav = location.pathname === "/login" || location.pathname === "/regist
         <Route path="/salary-period" element={
           <PrivateRoute>
             <SalaryPeriod />
-          </PrivateRoute>
-        }
-        />
+          </PrivateRoute>} />
+        <Route path="/forgot-password" element={
+          <ForgotPassword />} />
+        <Route path="/reset-password" element={
+          <ResetPassword />} />
     </Routes>
   </>
 );
