@@ -12,7 +12,7 @@ function Home({ expenses, budgets, deleteExpense, deleteBudget }) {
 
     fetch(`${apiURL}/api/salary-periods/`, {
       headers:{
-        Authorisation: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     })
       .then(res => res.json())

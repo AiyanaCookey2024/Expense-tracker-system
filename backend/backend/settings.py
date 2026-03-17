@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
+from corsheaders.defaults import default_headers
 import os
 
 load_dotenv()
@@ -149,6 +150,10 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://expense-tracker-system-1-dhpr.onrender.com",
+]
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "authorization",
 ]
 
 CSRF_TRUSTED_ORIGINS = [ 
