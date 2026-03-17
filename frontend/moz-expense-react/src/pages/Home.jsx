@@ -7,10 +7,17 @@ function Home({ expenses, budgets, deleteExpense, deleteBudget }) {
   const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000";
 
   useEffect(() => {
-  fetch(`${apiURL}/api/salary-periods/`)
-    .then(res => res.json())
-    .then(data => setPeriod(data[0]));
-  }, []);
+    const token = localStorage.getItem("access_token")
+    if (!token) return;
+
+    fetch(`${apiURL}/api/salary-periods/`, {
+      headers:{
+        Authorisation: `Bearer ${token}`,
+      },
+    })
+      .then(res => res.json())
+      .then(data => setPeriod(data[0]));
+    }, []);
 
 
   const monthNames = [

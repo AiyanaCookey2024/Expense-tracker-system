@@ -43,7 +43,7 @@ function App() {
 
     fetch(`${apiURL}/api/budgets/`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorisation: `Bearer ${token}`,
       },
     })
       .then(res => {
@@ -68,7 +68,7 @@ function App() {
 
   fetch(`${apiURL}/api/expenses/`, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorisation: `Bearer ${token}`,
     },
   })
     .then(res => {
@@ -89,7 +89,7 @@ function App() {
     fetch(`${apiURL}/api/budgets/`, {
       method: "POST",
       headers: { "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorisation: `Bearer ${token}`,
        },
       body: JSON.stringify(data)
     })
@@ -105,7 +105,7 @@ function App() {
     fetch(`${apiURL}/api/expenses/`, {
       method: "POST",
       headers: { "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorisation: `Bearer ${token}`,
       },
       body: JSON.stringify(data)
     })
@@ -122,7 +122,7 @@ function App() {
     fetch(`${apiURL}/api/budgets/${id}/`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorisation: `Bearer ${token}`,
       }
     }).then(() => {
       setBudgets(budgets.filter(b => b.id !== id));
@@ -135,7 +135,7 @@ function App() {
     fetch(`${apiURL}/api/expenses/${id}/`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorisation: `Bearer ${token}`,
       }
     })
       .then(() => {
