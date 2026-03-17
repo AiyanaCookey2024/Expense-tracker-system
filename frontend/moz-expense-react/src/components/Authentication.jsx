@@ -15,19 +15,33 @@ export const Login = () => {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const res = await fetch(`${apiURL}/api/auth/token/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
-    console.log("API URL is", apiURL)
-    const data = await res.json();
+    try {
+      const res = await fetch(`${apiURL}/api/auth/token/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    login(data.access, data.refresh, username);
+      const data = await res.json();
 
-    navigate("/");
+      if (!res.ok) {
+        alert(data.detail || "Invalid username or password");
+        return;
+      }
+
+      if (!data.access || !data.refresh) {
+        alert("Login failed: token not returned");
+        return;
+      }
+
+      login(data.access, data.refresh, username);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong while logging in.");
+    }
   }
 
   return (

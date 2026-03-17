@@ -59,15 +59,17 @@ class PasswordResetView(APIView):
                 status=status.HTTP_200_OK,
             )
 
-        # Create token
         from .models import PasswordResetToken
 
         token_obj = PasswordResetToken.objects.create(user=user)
 
-        # Send email
-        reset_url = (
-            f"{os.getenv('FRONTEND_URL')}/reset-password?token={token_obj.token}"
-        )
+        reset_url = f"{os.getenv('FRONTEND_URL')}/reset-password?token={token_obj.token}"
+
+        print("FRONTEND_URL:", os.getenv("FRONTEND_URL"))
+        print("DEFAULT_FROM_EMAIL:", settings.DEFAULT_FROM_EMAIL)
+        print("SENDGRID_API_KEY exists:", bool(os.getenv("SENDGRID_API_KEY")))
+        print("User email:", user.email)
+        print("Reset URL:", reset_url)
 
         message = Mail(
             from_email=settings.DEFAULT_FROM_EMAIL,
@@ -83,8 +85,6 @@ class PasswordResetView(APIView):
             print("SendGrid status:", response.status_code)
             print("Email sent to:", user.email)
             print("From:", settings.DEFAULT_FROM_EMAIL)
-            print("To:", user.email)
-            print("Reset URL", reset_url)
 
         except Exception as e:
             print("Password reset email failed:", str(e))
@@ -92,8 +92,9 @@ class PasswordResetView(APIView):
                 {"error": f"Email sending failed: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-        return Response({"message": "Reset email sent"}, status=status.HTTP_200_OK)
 
+        return Response({"message": "Reset email sent"}, status=status.HTTP_200_OK)
+    
 class PasswordResetConfirmView(APIView):
     authentication_classes = []
     permission_classes = (AllowAny,)

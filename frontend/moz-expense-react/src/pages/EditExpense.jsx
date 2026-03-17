@@ -57,7 +57,7 @@ function EditExpense() {
 
     return (
         <div className="container">
-            <h1>Update Expense</h1>
+            <h1>Edit Expense</h1>
             <form onSubmit={handleSubmit}>
                 <input name="title" placeholder="Title" value={expense.title} onChange={handleChange} />
                 <input name="amount" placeholder="Amount" value={expense.amount} onChange={handleChange} />
@@ -84,7 +84,7 @@ function EditExpense() {
                     ))}
                 </select>
                 <button type="submit" className="btn">
-                    Update </button>
+                    Edit </button>
             </form>
         </div>
     );

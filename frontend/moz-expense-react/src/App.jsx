@@ -33,11 +33,17 @@ function App() {
    }
 
   useEffect(() => {
-    if (!isLoggedIn) return;
+    const token = localStorage.getItem("access_token");
+
+    if (!isLoggedIn || !token) return;
+
+    console.log("isLoggedIn:", isLoggedIn);
+    console.log("access token:", localStorage.getItem("access_token"));
+    console.log ("token being sent:", token)
 
     fetch(`${apiURL}/api/budgets/`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${token}`,
       },
     })
       .then(res => {
@@ -53,30 +59,38 @@ function App() {
   }, [isLoggedIn, apiURL]);
 
   useEffect(() => {
-    if (!isLoggedIn) return;
+    const token = localStorage.getItem("access_token");
 
-    fetch(`${apiURL}/api/expenses/`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
-      },
+    if (!isLoggedIn || !token) return;
+
+  console.log("isLoggedIn:", isLoggedIn);
+  console.log("access token:", localStorage.getItem("access_token"));
+
+  fetch(`${apiURL}/api/expenses/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then(res => {
+      if (!res.ok) {
+        throw new Error("Failed to fetch expenses");
+      }
+      return res.json();
     })
-      .then(res => {
-        if (!res.ok) {
-          throw new Error("Failed to fetch expenses");
-        }
-        return res.json();
-      })
-      .then(data => {
-        setExpenses(data);
-      })
-      .catch(err => console.error(err));
-  }, [isLoggedIn, apiURL]);
-
+    .then(data => {
+      setExpenses(data);
+    })
+    .catch(err => console.error(err));
+}, [isLoggedIn, apiURL]);
 
   function addBudget(data) {
+    const token = localStorage.getItem("access_token");
+
     fetch(`${apiURL}/api/budgets/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+       },
       body: JSON.stringify(data)
     })
       .then(res => res.json())
@@ -86,36 +100,50 @@ function App() {
   }
  
   function addExpense(data) {
-  fetch(`${apiURL}/api/expenses/`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  })
-    .then(res => res.json())
-    .then(newExp => {
-      setExpenses(prev => [...prev, newExp]);
-    });
-}
+    const token = localStorage.getItem("access_token");
+
+    fetch(`${apiURL}/api/expenses/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data)
+    })
+      .then(res => res.json())
+      .then(newExp => {
+        setExpenses(prev => [...prev, newExp]);
+      });
+  }
 
   
   function deleteBudget(id) { 
+    const token = localStorage.getItem("access_token")
+
     fetch(`${apiURL}/api/budgets/${id}/`, {
-      method: "DELETE"
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
     }).then(() => {
       setBudgets(budgets.filter(b => b.id !== id));
     });
   }
 
   function deleteExpense(id) {
-  fetch(`${apiURL}/api/expenses/${id}/`, {
-    method: "DELETE"
-  })
-    .then(() => {
-      setExpenses(prev =>
-        prev.filter(e => e.id !== id)
-      );
-    });
-}
+    const token = localStorage.getItem("access_token")
+
+    fetch(`${apiURL}/api/expenses/${id}/`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
+      .then(() => {
+        setExpenses(prev =>
+          prev.filter(e => e.id !== id)
+        );
+      });
+  }
 
 const location = useLocation();
 const hideNav = 

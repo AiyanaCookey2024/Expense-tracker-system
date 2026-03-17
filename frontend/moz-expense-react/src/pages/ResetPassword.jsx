@@ -39,8 +39,9 @@ function ResetPassword() {
       setSuccess(data.message || "Password reset successful");
 
       // Optional: clear any old auth tokens
-      localStorage.removeItem("access");
-      localStorage.removeItem("refresh");
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("username")
 
       // Redirect after a short delay
       setTimeout(() => {

@@ -47,7 +47,7 @@ function EditBudget() {
                 <input name="month" placeholder="Month" value={budget.month} onChange={handleChange} />
                 <input name="year" placeholder="Year" value={budget.year} onChange={handleChange} />
                 <button type="submit" className="btn">
-                    Update</button>
+                    Edit</button>
             </form>
         </div>
     );
