@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.conf import settings
 
 from django.contrib.auth.models import User
 from rest_framework import generics
@@ -69,7 +70,7 @@ class PasswordResetView(APIView):
         )
 
         message = Mail(
-            from_email=os.getenv("DEFAULT_FROM_EMAIL"),
+            from_email=settings.DEFAULT_FROM_EMAIL,
             to_emails=user.email,
             subject="Reset Your Password",
             html_content=f'<a href="{reset_url}">Click to reset password</a>',
@@ -81,17 +82,18 @@ class PasswordResetView(APIView):
 
             print("SendGrid status:", response.status_code)
             print("Email sent to:", user.email)
-            print("From:", os.getenv("DEFAULT_FROM_EMAIL"))
+            print("From:", settings.DEFAULT_FROM_EMAIL)
             print("To:", user.email)
             print("Reset URL", reset_url)
-        except Exception as e:
-            return Response(
-                {"error": str(e)},
-                  status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
 
+        except Exception as e:
+            print("Password reset email failed:", str(e))
+            return Response(
+                {"error": f"Email sending failed: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
         return Response({"message": "Reset email sent"}, status=status.HTTP_200_OK)
-    
+
 class PasswordResetConfirmView(APIView):
     authentication_classes = []
     permission_classes = (AllowAny,)

@@ -33,22 +33,44 @@ function App() {
    }
 
   useEffect(() => {
-    fetch(`${apiURL}/api/budgets/`)
-      .then(res => res.json())
+    if (!isLoggedIn) return;
+
+    fetch(`${apiURL}/api/budgets/`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access")}`,
+      },
+    })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch budgets");
+        }
+        return res.json();
+      })
       .then(data => {
         setBudgets(data);
       })
       .catch(err => console.error(err));
-  }, []);
+  }, [isLoggedIn, apiURL]);
 
   useEffect(() => {
-    fetch(`${apiURL}/api/expenses/`)
-      .then(res => res.json())
+    if (!isLoggedIn) return;
+
+    fetch(`${apiURL}/api/expenses/`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access")}`,
+      },
+    })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch expenses");
+        }
+        return res.json();
+      })
       .then(data => {
         setExpenses(data);
       })
       .catch(err => console.error(err));
-  }, []);
+  }, [isLoggedIn, apiURL]);
 
 
   function addBudget(data) {

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from "react";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -7,16 +7,27 @@ function ForgotPassword() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const res = await fetch(`${apiURL}/api/auth/password-reset/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email }),
-    });
+    try {
+      const res = await fetch(`${apiURL}/api/auth/password-reset/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
 
-    const data = await res.json();
-    alert(data.message || "If the email exists, a reset link has been sent.");
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "Something went wrong");
+        return;
+      }
+
+      alert(data.message);
+    } catch (error) {
+      alert("Something went wrong. Please try again.");
+      console.error(error);
+    }
   }
 
   return (
