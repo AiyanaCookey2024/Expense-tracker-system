@@ -1,31 +1,64 @@
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams , useNavigate } from "react-router-dom";
 
 function ResetPassword() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const token = searchParams.get("token");
 
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
 
   const apiURL = import.meta.env.VITE_DJANGO_API_URL || "http://127.0.0.1:8000";
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setError("");
+    setSuccess("");
 
-    const res = await fetch(`${apiURL}/api/auth/password-reset-confirm/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        token: token,
-        new_password: password,
-      }),
-    });
+    try {
+      const res = await fetch(`${apiURL}/api/auth/password-reset-confirm/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: token,
+          new_password: password,
+        }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    alert(data.message || data.error);
+      if (!res.ok) {
+        setError(data.error || "Password reset failed");
+        return;
+      }
+
+      setSuccess(data.message || "Password reset successful");
+
+      // Optional: clear any old auth tokens
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+
+      // Redirect after a short delay
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    }
+  }
+
+  if (!token) {
+    return (
+      <div className="container">
+        <h1>Invalid reset link</h1>
+        <p>This password reset link is missing a token.</p>
+      </div>
+    );
   }
 
   return (
@@ -44,6 +77,9 @@ function ResetPassword() {
 
         <button type="submit">Reset password</button>
       </form>
+
+      {success && <p style={{ color: "green" }}>{success}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 }
