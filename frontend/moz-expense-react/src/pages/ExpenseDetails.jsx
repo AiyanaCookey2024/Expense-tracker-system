@@ -8,11 +8,24 @@ function ExpenseDetails() {
     const [expenses, setExpenses] = useState(null);
 
 
-useEffect(() => {
-    fetch(`${apiURL}/api/expenses/${id}/`)
-      .then(res => res.json())
-      .then(data => setExpenses(data))
-}, [id])
+    useEffect(() => {
+        const token = localStorage.getItem("access_token");
+        if (!token) return;
+
+        fetch(`${apiURL}/api/expenses/${id}/`, {
+            headers: {
+            Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(res => {
+            if (!res.ok) {
+                throw new Error("Failed to fetch expense details");
+            }
+            return res.json();
+            })
+            .then(data => setExpenses(data))
+            .catch(err => console.error(err));
+        }, [id, apiURL]);
 
 if (!expenses) return <p>Loading...</p>;
 

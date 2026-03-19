@@ -10,9 +10,17 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem("access_token");
     const storedUser = localStorage.getItem("username");
 
-    if (token && storedUser) {
+    if (
+      token &&
+      token !== "undefined" &&
+      token !== "null" &&
+      storedUser
+    ) {
       setIsLoggedIn(true);
       setUsername(storedUser);
+    } else {
+      setIsLoggedIn(false);
+      setUsername(null);
     }
   }, []);
 
@@ -26,7 +34,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.clear();
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("username");
+    
     setIsLoggedIn(false);
     setUsername(null);
   };

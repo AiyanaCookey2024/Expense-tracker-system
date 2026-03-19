@@ -15,10 +15,23 @@ function EditBudget() {
     });
 
     useEffect(() => {
-        fetch(`${apiURL}/api/budgets/${id}/`)
-          .then(res => res.json())
-          .then(data => setBudget(data))
-    }, [id])
+        const token = localStorage.getItem("access_token");
+        if (!token) return;
+
+        fetch(`${apiURL}/api/budgets/${id}/`, {
+            headers: {
+            Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(res => {
+            if (!res.ok) {
+                throw new Error("Failed to fetch budget");
+            }
+            return res.json();
+            })
+            .then(data => setBudget(data))
+            .catch(err => console.error(err));
+    }, [id, apiURL]);
     
     const handleChange = (e) => {
         setBudget({
@@ -30,13 +43,26 @@ function EditBudget() {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        const token = localStorage.getItem("access_token");
+        if (!token) return;
+
         fetch(`${apiURL}/api/budgets/${id}/`, {
-            method: 'PUT',
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(budget)
+            method: "PUT",
+            headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(budget),
         })
+            .then(res => {
+            if (!res.ok) {
+                throw new Error("Failed to update budget");
+            }
+            return res.json();
+            })
             .then(() => navigate(`/budgets/${id}`))
-    }
+            .catch(err => console.error(err));
+        };
 
     return (
         <div className="container">

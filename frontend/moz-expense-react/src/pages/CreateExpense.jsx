@@ -26,37 +26,57 @@ function CreateExpense() {
     }
 
     const handleSubmit = (e) => {
-    e.preventDefault();
+        e.preventDefault();
 
-    const formattedExpense = {
-        ...expense,
-        amount: parseFloat(expense.amount),
-        month: parseInt(expense.month),
-        year: parseInt(expense.year),
-        salary_period: parseInt(expense.salary_period)
-    };
+        const token = localStorage.getItem("access_token");
+        if (!token) return;
 
-    fetch(`${apiURL}/api/expenses/`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formattedExpense)
-    })
-    .then(res => res.json())
-    .then(data => {
-        navigate("/");
-    })
-    .catch(err => console.error(err));
-};
+        const formattedExpense = {
+            ...expense,
+            amount: parseFloat(expense.amount),
+            month: parseInt(expense.month),
+            year: parseInt(expense.year),
+            salary_period: parseInt(expense.salary_period),
+        };
+
+        fetch(`${apiURL}/api/expenses/`, {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(formattedExpense),
+        })
+            .then(res => {
+            if (!res.ok) {
+                throw new Error("Failed to create expense");
+            }
+            return res.json();
+            })
+            .then(() => {
+            navigate("/");
+            })
+            .catch(err => console.error(err));
+        };
 
     useEffect(() => {
+        const token = localStorage.getItem("access_token");
+        if (!token) return;
 
-        fetch(`${apiURL}/api/salary-periods/`)
-            .then(res => res.json())
+        fetch(`${apiURL}/api/salary-periods/`, {
+            headers: {
+            Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(res => {
+            if (!res.ok) {
+                throw new Error("Failed to fetch salary periods");
+            }
+            return res.json();
+            })
             .then(data => setSalaryPeriods(data))
             .catch(err => console.error(err));
-    }, []);
+    }, [apiURL]);
 
 
     return (

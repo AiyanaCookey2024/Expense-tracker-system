@@ -8,16 +8,21 @@ function Home({ expenses, budgets, deleteExpense, deleteBudget }) {
 
   useEffect(() => {
     const token = localStorage.getItem("access_token")
-    if (!token) return;
 
     fetch(`${apiURL}/api/salary-periods/`, {
-      headers:{
-        Authorization: `Bearer ${token}`,
-      },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then(res => {
+      if (!res.ok) {
+        throw new Error("Failed to fetch salary periods");
+      }
+      return res.json();
     })
-      .then(res => res.json())
-      .then(data => setPeriod(data[0]));
-    }, []);
+    .then(data => setPeriod(data[0]))
+    .catch(err => console.error(err));
+}, [apiURL]);
 
 
   const monthNames = [

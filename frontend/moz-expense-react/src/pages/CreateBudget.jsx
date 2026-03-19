@@ -21,17 +21,28 @@ function CreateBudget() {
     }
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        fetch(`${apiURL}/api/budgets/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(budget)
+    const token = localStorage.getItem("access_token");
+    if (!token) return;
+
+    fetch(`${apiURL}/api/budgets/`, {
+        method: "POST",
+        headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(budget),
+    })
+        .then(res => {
+        if (!res.ok) {
+            throw new Error("Failed to create budget");
+        }
+        return res.json();
         })
-            .then(() => navigate("/"))
-}
+        .then(() => navigate("/"))
+        .catch(err => console.error(err));
+    };
 
     return (
         <div className="container">

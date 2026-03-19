@@ -18,10 +18,23 @@ function EditExpense() {
     });
 
     useEffect(() => {
-        fetch(`${apiURL}/api/expenses/${id}/`)
-          .then(res => res.json())
-          .then(data => setExpense(data))
-    }, [id])
+        const token = localStorage.getItem("access_token");
+        if (!token) return;
+
+        fetch(`${apiURL}/api/expenses/${id}/`, {
+            headers: {
+            Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(res => {
+            if (!res.ok) {
+                throw new Error("Failed to fetch expense");
+            }
+            return res.json();
+            })
+            .then(data => setExpense(data))
+            .catch(err => console.error(err));
+    }, [id, apiURL]);
     
     const handleChange = (e) => {
         setExpense({
@@ -31,21 +44,34 @@ function EditExpense() {
     }
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        const formattedExpense = {
-            ...expense,
-            amount: parseFloat(expense.amount),
-            salary_period: parseInt(expense.salary_period)
-        };
+    const token = localStorage.getItem("access_token");
+    if (!token) return;
 
-        fetch(`${apiURL}/api/expenses/${id}/`, {
-            method: 'PUT',
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(expense)
+    const formattedExpense = {
+        ...expense,
+        amount: parseFloat(expense.amount),
+        salary_period: parseInt(expense.salary_period),
+    };
+
+    fetch(`${apiURL}/api/expenses/${id}/`, {
+        method: "PUT",
+        headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formattedExpense),
+    })
+        .then(res => {
+        if (!res.ok) {
+            throw new Error("Failed to update expense");
+        }
+        return res.json();
         })
-            .then(() => navigate(`/expenses/${id}`))
-    }
+        .then(() => navigate(`/expenses/${id}`))
+        .catch(err => console.error(err));
+    };
 
     useEffect(() => {
 

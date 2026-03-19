@@ -9,7 +9,14 @@ function BudgetDetails() {
     const [budgets, setBudgets] = useState(null);
 
     useEffect(() => {
-        fetch(`${apiURL}/api/budgets/${id}/`)
+        const token = localStorage.getItem("access_token");
+        if (!token) return;
+
+        fetch(`${apiURL}/api/budgets/${id}/`, {
+            headers:{
+                Authorization:`Bearer ${token}`,
+            },
+        })
             .then(res => res.json())
             .then(data => setBudgets(data));
     }, [id]);
