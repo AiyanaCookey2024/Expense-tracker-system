@@ -12,14 +12,20 @@ function BudgetDetails() {
         const token = localStorage.getItem("access_token");
         if (!token) return;
 
-        fetch(`${apiURL}/api/budgets/${id}/`, {
-            headers:{
-                Authorization:`Bearer ${token}`,
+        fetch(`${apiURL}/api/budegts/${id}/`, {
+            headers: {
+            Authorization: `Bearer ${token}`,
             },
         })
-            .then(res => res.json())
-            .then(data => setBudgets(data));
-    }, [id]);
+            .then(res => {
+            if (!res.ok) {
+                throw new Error("Failed to fetch budget details");
+            }
+            return res.json();
+            })
+            .then(data => setBudgets(data))
+            .catch(err => console.error(err));
+    }, [id, apiURL]);
 
     if (!budgets) return <p>Loading...</p>;
 

@@ -25,7 +25,7 @@ function ExpenseDetails() {
             })
             .then(data => setExpenses(data))
             .catch(err => console.error(err));
-        }, [id, apiURL]);
+    }, [id, apiURL]);
 
 if (!expenses) return <p>Loading...</p>;
 

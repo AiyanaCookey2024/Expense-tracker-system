@@ -8,31 +8,54 @@ function SalaryPeriod() {
     const navigate = useNavigate();
 
    useEffect(() => {
-    fetch(`${apiURL}/api/salary-periods/`)
-      .then(res => res.json())
-      .then(data => {
-        setPeriod(data[0]); 
-      });
-    }, []);
+      const token = localStorage.getItem("access_token");
+      if (!token) return;
+
+      fetch(`${apiURL}/api/salary-periods/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error("Failed to fetch salary periods");
+          }
+          return res.json();
+        })
+        .then(data => {
+          setPeriod(data[0]);
+        })
+        .catch(err => console.error(err));
+    }, [apiURL]);
 
 
   function handleSubmit(e) {
     e.preventDefault();
 
+    const token = localStorage.getItem("access_token");
+    if (!token) return;
+
     fetch(`${apiURL}/api/salary-periods/${period.id}/`, {
       method: "PATCH",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(period)
+      body: JSON.stringify(period),
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("Failed to update salary period");
+        }
+        return res.json();
+      })
       .then(updated => {
-        console.log("Updtaed:", updated)
+        console.log("Updated:", updated);
         setPeriod(updated);
       })
-    .then(() => navigate("/"))
-    }
+      .then(() => navigate("/"))
+      .catch(err => console.error(err));
+  }
 
 
   if (!period) return <p>Loading...</p>;

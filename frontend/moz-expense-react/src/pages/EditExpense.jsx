@@ -74,12 +74,23 @@ function EditExpense() {
     };
 
     useEffect(() => {
+        const token = localStorage.getItem("access_token");
+        if (!token) return;
 
-        fetch(`${apiURL}/api/salary-periods/`)
-            .then(res => res.json())
+        fetch(`${apiURL}/api/salary-periods/`, {
+            headers: {
+            Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(res => {
+            if (!res.ok) {
+                throw new Error("Failed to fetch salary periods");
+            }
+            return res.json();
+            })
             .then(data => setSalaryPeriods(data))
             .catch(err => console.error(err));
-    }, []);
+    }, [apiURL]);
 
     return (
         <div className="container">
