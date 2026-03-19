@@ -70,6 +70,7 @@ class PasswordResetView(APIView):
         print("SENDGRID_API_KEY exists:", bool(os.getenv("SENDGRID_API_KEY")))
         print("User email:", user.email)
         print("Reset URL:", reset_url)
+        print("REST TOKEN:", token_obj.token)
 
         message = Mail(
             from_email=settings.DEFAULT_FROM_EMAIL,

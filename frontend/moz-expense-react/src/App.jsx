@@ -11,6 +11,7 @@ import { useAuth } from "./AuthContext";
 import SalaryPeriod from "./pages/ChangeSalary";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import Profile from "./pages/Profile";
 
 import Home from "./pages/Home";
 
@@ -165,6 +166,7 @@ const hideNav =
         <Link to="/salary-period">Salary Period</Link>
         <span className="welcome-text"> Welcome {username}!</span>
         <button className="btn" onClick={handleLogout}>Logout</button>
+        <Link to="/profile">Profile</Link>
         </>
       ) : (
         <>
@@ -222,6 +224,10 @@ const hideNav =
           <ForgotPassword />} />
         <Route path="/reset-password" element={
           <ResetPassword />} />
+        <Route path="/profile" element={
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute> } />
     </Routes>
   </>
 );

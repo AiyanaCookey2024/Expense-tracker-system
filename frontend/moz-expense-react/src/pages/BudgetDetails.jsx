@@ -12,7 +12,7 @@ function BudgetDetails() {
         const token = localStorage.getItem("access_token");
         if (!token) return;
 
-        fetch(`${apiURL}/api/budegts/${id}/`, {
+        fetch(`${apiURL}/api/budgets/${id}/`, {
             headers: {
             Authorization: `Bearer ${token}`,
             },

@@ -76,7 +76,7 @@ function ResetPassword() {
           required
         />
 
-        <button type="submit">Reset password</button>
+        <button type="submit" className="btn">Reset password </button>
       </form>
 
       {success && <p style={{ color: "green" }}>{success}</p>}
