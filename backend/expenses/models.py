@@ -1,9 +1,11 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User
 
 
 # Create your models here.
 class Budget(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=250)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     month = models.IntegerField()
@@ -14,6 +16,7 @@ class Budget(models.Model):
 
 
 class SalaryPeriod(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     month = models.IntegerField()
     year = models.IntegerField()
     total_salary = models.DecimalField(max_digits=10, decimal_places=2)
@@ -39,6 +42,7 @@ class Expense(models.Model):
         ("SAVINGS/INVESTMENTS","Savings/Investments"),
         ('OTHER', 'Other'),
     ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=120)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)

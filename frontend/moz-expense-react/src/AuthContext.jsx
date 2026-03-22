@@ -5,6 +5,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -22,6 +23,8 @@ export const AuthProvider = ({ children }) => {
       setIsLoggedIn(false);
       setUsername(null);
     }
+
+    setAuthChecked(true);
   }, []);
 
   const login = (access, refresh, user) => {
@@ -37,7 +40,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("username");
-    
+
     setIsLoggedIn(false);
     setUsername(null);
   };
@@ -46,7 +49,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, username, login, logout, getAccessToken }}
+      value={{ isLoggedIn, username, login, logout, getAccessToken, authChecked }}
     >
       {children}
     </AuthContext.Provider>

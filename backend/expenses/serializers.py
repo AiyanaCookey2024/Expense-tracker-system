@@ -7,6 +7,7 @@ class BudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Budget
         fields = "__all__"
+        read_only_fields = ["user"]
 
 class SalaryPeriodSerializer(serializers.ModelSerializer):
     remaining_balance = serializers.SerializerMethodField()
@@ -14,6 +15,7 @@ class SalaryPeriodSerializer(serializers.ModelSerializer):
     class Meta:
         model = SalaryPeriod
         fields = "__all__"
+        read_only_fields = ["user"]
     
     def get_remaining_balance(self, obj):
         total_spent = obj.expenses.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
@@ -26,6 +28,7 @@ class ExpenseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Expense
         fields = "__all__"
+        read_only_fields = ["user"]
 
     def validate(self, data):
         salary_period = data.get('salary_period')

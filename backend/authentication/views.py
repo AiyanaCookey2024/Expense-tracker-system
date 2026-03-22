@@ -10,6 +10,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from rest_framework.views import APIView
+from expenses.models import SalaryPeriod
+from django.utils import timezone
 import os
 
 from .serializers import (
@@ -32,6 +34,14 @@ class RegisterView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
 
         user = serializer.save()
+
+        now = timezone.now()
+        SalaryPeriod.objects.create(
+            user=user,
+            month=now.month,
+            year=now.year,
+            total_salary=0
+        )
 
         refresh = RefreshToken.for_user(user)
 

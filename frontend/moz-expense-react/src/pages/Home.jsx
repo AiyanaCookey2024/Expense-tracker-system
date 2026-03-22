@@ -32,8 +32,8 @@ function Home({ expenses, budgets, deleteExpense, deleteBudget }) {
   ];
   
   const salaryPeriod = 
-    budgets.length > 0 
-    ? `${monthNames[budgets[0].month -1]} ${budgets[0].year}`
+    period
+    ? `${monthNames[period.month -1]} ${period.year}`
     : "No salary period";
 
   const totalExpenses = expenses.reduce(
